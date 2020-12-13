@@ -1,4 +1,5 @@
 package day05;
+import Utility.ConfigurationReader;
 import io.restassured.path.json.JsonPath;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -16,7 +17,8 @@ public class AssertingCollectionInTheChain {
 
     @BeforeAll
     public static void setUp() {
-        baseURI = "http://54.91.39.25:8000";
+        //baseURI = "http://54.91.39.25:8000";
+        baseURI = ConfigurationReader.getProperty("spartan.base_url");
         basePath = "/api";
     }
 
