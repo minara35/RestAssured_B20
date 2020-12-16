@@ -6,7 +6,9 @@ import io.restassured.http.ContentType;
 import pojo.Spartan;
 import Utility.ConfigurationReader;
 import Utility.SpartanUtil;
+import pojo.SpartanRead;
 
+import java.util.List;
 import java.util.Map;
 
 import static io.restassured.RestAssured.* ;
@@ -14,31 +16,34 @@ import static org.hamcrest.Matchers.* ;
 
 public class JsonToJavaObject {
     @BeforeAll
-    public static void setUp() {
+    public static void setUp(){
         //RestAssured.filters().add(new AllureRestAssured() ) ;
         baseURI = ConfigurationReader.getProperty("spartan.base_url");
-        basePath = "/api";
+        basePath = "/api" ;
     }
 
     @AfterAll
-    public static void tearDown() {
+    public static void tearDown(){
         reset();
     }
 
-    @DisplayName("Get 1 Data with Save Response Json As Java Object")
+    @DisplayName("Get 1 Data and Save Response Json As Java Map Object")
     @Test
     public void getOneSpartanAndSaveResponseJsonAsMap() {
 
         Response response = given()
                 .auth().basic("admin", "admin")
                 .log().all()
-                .pathParam("id", 5).
+                .pathParam("id", 12).
                         when()
                 .get("/spartans/{id}").prettyPeek();
         // get jsonPath object
         JsonPath jp = response.jsonPath();
         Map<String, Object> responseMap = jp.getMap("");
         System.out.println("responseMap = " + responseMap);
+
+        SpartanRead sp = jp.getObject("", SpartanRead.class);
+        System.out.println("sp = " + sp);
 
 
         /**
@@ -65,6 +70,28 @@ public class JsonToJavaObject {
          *
          *
          */
+    }
+    @DisplayName("Get All Data and Save Response JsonArray As Java Object")
+    @Test
+    public void getOneSpartanAndSaveResponseJsonAsJavaObject(){
+
+
+        Response response = given()
+                .auth().basic("admin", "admin").
+                        when()
+                .get("/spartans") ;
+
+        JsonPath jp = response.jsonPath() ;
+
+        List<SpartanRead> allSpartanPOJOs = jp.getList("", SpartanRead.class);
+
+
+        //System.out.println("allSpartanPOJOs = \n" + allSpartanPOJOs);
+        allSpartanPOJOs.forEach(System.out::println);
 
     }
+
+    // Send request to /api/spartans/search endpoint
+    // save your jsonArray from search result into
+    // List of SpartanRead POJO
 }
