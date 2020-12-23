@@ -41,4 +41,21 @@ public class JsonSchemaValidationPractice extends SpartanAdminTestBase {
                 .body(matchesJsonSchema( schemaFile )  )
         ;
     }
+
+    @DisplayName("Testing GET /spartans/search endpoint response structure")
+    @Test
+    public void testSearchSpartanResponseSchema(){
+        given()
+                .spec(adminReqSpec)
+                .queryParam("nameContains","a")
+                .queryParam("gender","Female").
+                when()
+                .get("/spartans/search").
+                then()
+                .body(matchesJsonSchemaInClasspath("searchSpartanSchema.json") )
+        ;
+
+    }
+
+
 }
